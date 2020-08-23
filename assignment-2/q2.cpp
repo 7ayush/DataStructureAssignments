@@ -90,6 +90,27 @@ void displaySparse(sparse* array,int n)
     }
     
 }
+int **make_matrix(int rows,int columns,int *row,int *column,int *value)
+{
+	int **newMatrix=new int*[rows],k=0;
+	for(int i=0;i<rows;i++)
+	{
+		newMatrix[i]=new int[columns];
+		for(int j=0;j<columns;j++)
+		{
+			if(row[k]==i&&column[k]==j)
+            {
+                newMatrix[i][j]=value[k];
+                k++;
+            }
+            else
+            {
+                newMatrix[i][j]=0;
+            }
+		}
+	}
+	return newMatrix;
+}
 int main()
 {
     int choice,n1=0,n2=0,find=0;
@@ -114,7 +135,7 @@ int main()
         switch(choice)
         {
             case 1:{
-                int rows=0,columns=0,found=0,k=0;
+                int rows=0,columns=0,k=0;
                 cout<<"Enter the number of non zero elements the matrix"<<endl;
                 cin>>n1;
                 cout<<"Fill non zero rows of matrix"<<endl;
@@ -153,6 +174,7 @@ int main()
                 int rows=0,columns=0,found=0,k=0;
                 cout<<"Enter the number of non zero elements the matrix"<<endl;
                 cin>>n1;
+                cout<<"Enter Row column and value of every non zero element respectively"<<endl;
                 sparse *sparse_array=fillSparse(n1);
                 cout<<endl;
                 //displaySparse(sparse_array, n1);
@@ -181,9 +203,10 @@ int main()
                     cout<<endl;
                 }
                 delete[]sparse_array;
+                break;
             }   
                 
-                break;
+                
 
             case 3:
             {
@@ -274,51 +297,59 @@ int main()
                 
                 rows1=row1[n1-1]+1;
                 columns1=maxValue(column1,n1)+1;
+                int **matrix1=make_matrix(rows1,columns1,row1,column1,value1);
 
                 rows2=row2[n1-2]+1;
                 columns2=maxValue(column2,n2)+1;
+                int **matrix2=make_matrix(rows2,columns2,row2,column2,value2);
                 if(columns1==rows2)
                 {
+                    int **resultMatrix=new int*[rows1]();
                     for(int i=0;i<rows1;i++)
                     {
+                        resultMatrix[i]=new int[columns1];
                         for(int j=0;j<columns2;j++)
                         {
-                            sum=0;
-                            flag1=false;
-                            flag2=false;
                             for(int k=0;k<columns1;k++)
                             {
-                                // +=matrix1[i][k]*matrix2[k][j];
-                                if(row1[k1]==i&&column1[k1]==k)
-                                {
-                                    flag1=true;
-                                    k1++;
-                                }
-
-                                if(row2[k2]==k&&column2[k2]==j)
-                                {
-                                    flag2=true;
-                                    k2++;
-                                }
-                                if(flag1||flag2)
-                                {
-                                    sum+=value1[k1-1]*value2[k2-1];
-                                
-                                }
+                                resultMatrix[i][j]+=matrix1[i][k]*matrix2[k][j];
                             }
-                            cout<<sum<<" ";
+                        }
+                    }
+                    for(int i=0;i<rows1;i++)
+                    {
+                        
+                        for(int j=0;j<columns2;j++)
+                        {
+                            cout<<resultMatrix[i][j]<<" ";
                         }
                         cout<<endl;
                     }
+                    for(int i=0;i<rows1;i++)
+                    {
+                        delete[] resultMatrix[i];
+                    }
+                    delete[] resultMatrix;
+
                 }
                 else
                 {
                     cout<<"Not eligible for multiplication"<<endl;
                 }
+                for(int i=0;i<rows1;i++)
+                {
+                    delete[] matrix1[i];
+                }
+                delete[] matrix1;
+                for(int i=0;i<rows2;i++)
+                {
+                    delete[] matrix2[i];
+                }
+                delete[] matrix2;
                 
             }
+
                 
-                break;
            
 
             default:                
